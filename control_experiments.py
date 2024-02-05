@@ -1,3 +1,6 @@
+import time
+import numpy as np
+import torch
 
 class ControlExperiment(Experiment):
     def __init__(self):
