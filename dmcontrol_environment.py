@@ -1,3 +1,5 @@
+import copy
+import numpy as np
 from gymnasium import core, spaces
 from typing import Tuple
 import gymnasium as gym
