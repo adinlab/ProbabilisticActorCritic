@@ -3,6 +3,8 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 from torch.nn.parameter import Parameter
+from torch.distributions import Normal, TransformedDistribution
+from torch.distributions.transforms import TanhTransform
 
 class CriticNetEpistemic(nn.Module):
     def __init__(self, n_x, n_u, n_hidden=256):
