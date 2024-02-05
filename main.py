@@ -1,4 +1,4 @@
-from control_experiment import *
+from control_experiments import *
 
 exp = ControlExperiment()
 exp.train()
