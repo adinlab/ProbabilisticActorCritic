@@ -3,6 +3,7 @@ from typing import Tuple
 import gymnasium as gym
 from gymnasium.spaces import Box, Dict
 from typing import Dict, Optional, OrderedDict
+from dm_control import suite
 
 
 TimeStep = Tuple[np.ndarray, float, bool, bool, dict]
