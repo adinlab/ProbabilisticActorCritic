@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 import math
-from agents.base_agent import Agent
 import numpy as np
 import torch.nn.init as init
 from scipy.stats import norm 
