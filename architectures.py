@@ -1,5 +1,7 @@
+import torch
+import torch.nn as nn
 import torch.nn.init as init
-
+import torch.nn.functional as F
 
 class CriticNetEpistemic(nn.Module):
     def __init__(self, n_x, n_u, n_hidden=256):
