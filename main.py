@@ -1,0 +1,2 @@
+exp = ControlExperiment()
+exp.train()
