@@ -9,7 +9,7 @@ from dmcontrol_environment import *
 import metaworld
 from robosuite.controllers import load_controller_config
 from gymnasium.wrappers.pixel_observation import PixelObservationWrapper
-
+from get_model import *
 
 
 class SinglePrecision(gym.ObservationWrapper):
