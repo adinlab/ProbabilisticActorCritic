@@ -1,13 +1,9 @@
-# import copy
-# import numpy as np
-from typing import Tuple
-import gymnasium as gym
-from gymnasium.spaces import Box, Dict
 import copy
-from typing import Dict, Optional, OrderedDict
-import glfw
-import dm_env
 import numpy as np
+from typing import Tuple
+from typing import Dict, Optional, OrderedDict
+from gymnasium.spaces import Box, Dict
+import dm_env
 from dm_control import suite
 from gymnasium import core, spaces
 

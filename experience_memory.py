@@ -1,8 +1,5 @@
 import numpy as np
-import os
-import torch
-import copy
-from collections import deque
+import os, torch, copy
 
 class ExperienceMemory:
     """Fixed-size buffer to store experience tuples."""

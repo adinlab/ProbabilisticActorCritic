@@ -1,7 +1,9 @@
-import time
+import time,argparse
 import numpy as np
 import torch
 from make_environment import Experiment
+parser = argparse.ArgumentParser()
+args = parser.parse_args()
 
 class ControlExperiment(Experiment):
     def __init__(self):
@@ -9,13 +11,13 @@ class ControlExperiment(Experiment):
         self.device_str = "cpu"
         self.optimizer_args = {"lr": 4e-3}
         self.n_total_steps = 0
-        self.max_steps = 100000
-        self.args.eval_frequency=1000
-        self.args.eval_episodes=10
-        self.args.gamma=0.99
-        self.args.warmup_steps=10000
-        self.args.learn_frequency=1
-        self.args.max_iter=1
+        args.max_steps = 100000
+        args.eval_frequency=1000
+        args.eval_episodes=10
+        args.gamma=0.99
+        args.warmup_steps=10000
+        args.learn_frequency=1
+        args.max_iter=1
         self.env = self.env
     
     def train(self):
@@ -36,10 +38,10 @@ class ControlExperiment(Experiment):
 
             e_step +=1
 
-            if step % self.args.eval_frequency == 0:
+            if step % args.eval_frequency == 0:
                 self.eval(step)
 
-            if step < self.args.warmup_steps:
+            if step < args.warmup_steps:
                 a = self.env.action_space.sample()
             else:
                 a = self.agent.select_action(s)
@@ -52,8 +54,8 @@ class ControlExperiment(Experiment):
             s = sp # Update state
             r_cum += r # Update cumulative reward
 
-            if step >= self.args.warmup_steps and (step % self.args.learn_frequency) == 0:
-                self.agent.learn(max_iter=self.args.max_iter)
+            if step >= args.warmup_steps and (step % args.learn_frequency) == 0:
+                self.agent.learn(max_iter=args.max_iter)
 
             if done or truncated:
 
@@ -72,11 +74,11 @@ class ControlExperiment(Experiment):
     @torch.no_grad()
     def eval(self, n_step):
         self.agent.eval()
-        results = np.zeros(self.args.eval_episodes)
-        q_values = np.zeros(self.args.eval_episodes)
-        avg_reward=np.zeros(self.args.eval_episodes)
+        results = np.zeros(args.eval_episodes)
+        q_values = np.zeros(args.eval_episodes)
+        avg_reward=np.zeros(args.eval_episodes)
 
-        for episode in range(self.args.eval_episodes):
+        for episode in range(args.eval_episodes):
             s, _ = self.eval_env.reset()
             step = 0
             a = self.agent.select_action(s, is_training=False)
@@ -89,7 +91,7 @@ class ControlExperiment(Experiment):
                 done = term or trunc
                 s = sp
                 results[episode] += r
-                avg_reward[episode] += self.args.gamma**step * r
+                avg_reward[episode] += args.gamma**step * r
                 step += 1
 
         self.agent.train()

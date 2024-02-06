@@ -1,9 +1,8 @@
-import torch
+import torch, math
 from torch import nn
-import math
 import numpy as np
 import torch.nn.init as init
-from scipy.stats import norm 
+from agent import Agent
 
 class PAC(Agent):
     _agent_name = "PAC"

@@ -1,3 +1,6 @@
+from architectures import CriticNetEpistemic,ActorNetProbabilistic
+from pac import PAC
+
 def get_model( env):
     model_name = 'pac'
     critic_nn = CriticNetEpistemic
