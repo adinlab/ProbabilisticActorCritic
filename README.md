@@ -1,7 +1,7 @@
 # ProbabilisticActorCritic
 
 
-This repository includes the code to train the PAC algorithm on dmcartpole swingup from paper:
+This repository includes the code to replicate the PAC algorithm from paper:
 
 
 > **Probabilistic Actor-Critic: Learning to Explore with PAC-Bayes Uncertainty**\
