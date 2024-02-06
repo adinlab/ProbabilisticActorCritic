@@ -1,6 +1,7 @@
 import time
 import numpy as np
 import torch
+from make_environment import Experiment
 
 class ControlExperiment(Experiment):
     def __init__(self):

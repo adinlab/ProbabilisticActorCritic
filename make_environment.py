@@ -5,6 +5,12 @@ from gymnasium.wrappers import RescaleAction
 from typing import Optional
 import numpy as np
 import torch
+from dmcontrol_environment import *
+import metaworld
+from robosuite.controllers import load_controller_config
+from gymnasium.wrappers.pixel_observation import PixelObservationWrapper
+
+
 
 class SinglePrecision(gym.ObservationWrapper):
 
@@ -86,7 +92,7 @@ def make_env(env_name: str,
 
 class Experiment(object):
     def __init__(self):
-        self.args = args
+        # self.args = args
         self.n_total_steps = 0
         self.max_steps = 100000
         self.env = make_env('cartpole-swingup', 1)

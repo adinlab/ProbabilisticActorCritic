@@ -1,12 +1,16 @@
-import copy
-import numpy as np
-from gymnasium import core, spaces
+# import copy
+# import numpy as np
 from typing import Tuple
 import gymnasium as gym
 from gymnasium.spaces import Box, Dict
+import copy
 from typing import Dict, Optional, OrderedDict
-from dm_control import suite
+import glfw
 import dm_env
+import numpy as np
+from dm_control import suite
+from gymnasium import core, spaces
+
 
 TimeStep = Tuple[np.ndarray, float, bool, bool, dict]
 
