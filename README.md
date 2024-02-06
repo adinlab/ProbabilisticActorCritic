@@ -11,7 +11,7 @@ This repository includes the code to replicate the PAC algorithm from paper:
 
 
 
-## PAC
+# PAC
 To train the PAC on dmcartpole swingup environment run the following command:
 
 ```
