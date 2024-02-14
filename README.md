@@ -5,8 +5,7 @@ This repository includes the code to replicate the PAC algorithm from paper:
 
 
 > **Probabilistic Actor-Critic: Learning to Explore with PAC-Bayes Uncertainty**\
-> _Bahareh Tasdighi, Nicklas Werge, Yi-Shan Wu, Melih Kandemir_\
-> International Conference on Machine Learning (ICML),2023  
+> _Bahareh Tasdighi, Nicklas Werge, Yi-Shan Wu, Melih Kandemir_\,2023  
 > [ArXiv](https://arxiv.org/abs/2402.03055) 
 
 
