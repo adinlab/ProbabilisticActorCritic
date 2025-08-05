@@ -10,8 +10,8 @@ This repository includes the code to replicate the PAC algorithm from paper:
 
 
 
-# PBAC
-To train the PAC on dmcartpole swingup environment run the following command:
+# run
+To train the PBAC on dmcartpole swingup environment run the following command:
 
 ```
 python main.py
