@@ -1,4 +1,4 @@
-# DeppExplorationWithPAC-Bayes
+# DeepExplorationWithPAC-Bayes
 
 
 This repository includes the code to replicate the PAC algorithm from paper:
