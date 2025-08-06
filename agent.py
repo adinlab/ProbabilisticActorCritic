@@ -8,12 +8,10 @@ args = parser.parse_args()
 class Agent(nn.Module):
     def __init__(self, env):
         super(Agent, self).__init__()
-        self.device = 'cpu'
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.env = env
         args.buffer_size=1000000
         self._nx, self._nu = self.env.observation_space.shape, self.env.action_space.shape
-        print(self._nx)
-        print(self._nu)
         self._nx_flat, self._nu_flat = np.prod(self._nx), np.prod(self._nu)
         self._u_min = torch.from_numpy(self.env.action_space.low).float().to(self.device)
         self._u_max = torch.from_numpy(self.env.action_space.high).float().to(self.device)

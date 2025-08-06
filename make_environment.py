@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from dmcontrol_environment import *
 from get_model import *
+import argparse
 
 
 class SinglePrecision(gym.ObservationWrapper):
@@ -89,7 +90,8 @@ def make_env(env_name: str,
 class Experiment(object):
     def __init__(self):
         self.n_total_steps = 0
+        args = argparse.Namespace()
         self.max_steps = 100000
-        self.env = make_env('cartpole-swingup', 1)
-        self.eval_env = make_env('cartpole-swingup', 101)
-        self.agent = get_model( self.env)
+        self.env = make_env("cartpole-swingup",1) 
+        self.eval_env = make_env("cartpole-swingup", 101)
+        self.agent = get_model( self.env, args=args)

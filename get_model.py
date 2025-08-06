@@ -1,8 +1,5 @@
-from architectures import CriticNetEpistemic,ActorNetProbabilistic
-from pac import PAC
+from pbac import PBAC
 
-def get_model( env):
-    model_name = 'pac'
-    critic_nn = CriticNetEpistemic
-    actor_nn = ActorNetProbabilistic
-    return PAC(env, actor_nn, critic_nn)
+def get_model(  env, args):
+    model_name = 'pbac'
+    return PBAC(env, args)

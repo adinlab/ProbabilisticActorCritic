@@ -1,7 +1,7 @@
 # PBAC
 
 
-This repository includes the code to replicate the PAC algorithm from paper:
+This repository includes the code to replicate the PBAC algorithm from paper:
 
 
 > **Deep Exploration With PAC-Bayes**\
