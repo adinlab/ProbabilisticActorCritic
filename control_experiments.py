@@ -1,4 +1,3 @@
-
 import time, argparse, torch
 import numpy as np
 from make_environment import Experiment
@@ -8,8 +7,10 @@ from make_environment import Experiment
 def totorch(x, device="cpu"):
     return torch.from_numpy(x).float().to(device)
 
+
 def tonumpy(x):
     return x.detach().cpu().numpy()
+
 
 # Argument parser
 parser = argparse.ArgumentParser()
@@ -38,7 +39,7 @@ class ControlExperiment(Experiment):
         information_dict = {
             "episode_rewards": np.zeros(10000),
             "episode_steps": np.zeros(10000),
-            "step_rewards": np.empty((2 * self.args.max_steps), dtype=object)
+            "step_rewards": np.empty((2 * self.args.max_steps), dtype=object),
         }
 
         s, _ = self.env.reset()
@@ -63,18 +64,25 @@ class ControlExperiment(Experiment):
             sp = totorch(sp, self.device)
 
             self.agent.store_transition(s, a, r, sp, done, truncated, step + 1)
-            information_dict["step_rewards"][self.n_total_steps + step] = (episode, step, r)
+            information_dict["step_rewards"][self.n_total_steps + step] = (
+                episode,
+                step,
+                r,
+            )
 
             s = sp
             r_cum += r
 
-            if step >= self.args.warmup_steps and (step % self.args.learn_frequency) == 0:
+            if (
+                step >= self.args.warmup_steps
+                and (step % self.args.learn_frequency) == 0
+            ):
                 self.agent.learn(max_iter=self.args.max_iter)
 
             if done or truncated:
                 information_dict["episode_rewards"][episode] = r_cum
                 information_dict["episode_steps"][episode] = step
-                print('Episode:', episode, 'Reward: %.3f' % r_cum, 'N-steps:', step)
+                print("Episode:", episode, "Reward: %.3f" % r_cum, "N-steps:", step)
                 s, _ = self.env.reset()
                 s = totorch(s, self.device)
                 r_cum = 0
@@ -105,7 +113,7 @@ class ControlExperiment(Experiment):
                 done = term or trunc
                 s = totorch(sp, self.device)
                 results[episode] += r
-                avg_reward[episode] += self.args.gamma ** step * r
+                avg_reward[episode] += self.args.gamma**step * r
                 step += 1
 
         self.agent.train()

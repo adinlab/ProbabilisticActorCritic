@@ -1,11 +1,11 @@
-# PBAC
+# Deep Exploration With PAC-Bayes (PBAC)
 
-
-This repository includes the code to replicate the PBAC algorithm from paper:
+This repository includes the code to replicate the PBAC algorithm from the following publication:
 
 
 > **Deep Exploration With PAC-Bayes**\
-> _Bahareh Tasdighi, Nicklas Werge, Yi-Shan Wu, Melih Kandemir_\,2023  
+> _Bahareh Tasdighi, Manuel Haussmann, Nicklas Werge, Yi-Shan Wu, Melih Kandemir, 2025_\ 
+> _European Conference on Artificial Intelligence_\
 > [ArXiv](https://arxiv.org/abs/2402.03055) 
 
 
@@ -19,14 +19,15 @@ python main.py
 
 
 
-# Cite
+## Cite
 If you use PBAC, please cite:
 
 ```
-@article{tasdighi2024deep,
-  title={Deep exploration with PAC-Bayes},
-  author={Tasdighi, Bahareh and Haussmann, Manuel and Werge, Nicklas and Wu, Yi-Shan and Kandemir, Melih},
-  journal={arXiv preprint arXiv:2402.03055},
-  year={2024}
+@inproceedings{tasdighi2025pbac,
+  title = {Deep Exploration with PAC-Bayes},
+  author = {Tasdighi, B. and Haussmann, M. and Werge, N. and Wu, Y. and Kandemir, M.},
+  year = {2025},
+  booktitle = {European Conference on Artificial Intelligence},
+  url = {https://arxiv.org/abs/2402.03055},
 }
 ```

@@ -16,8 +16,7 @@ class SinglePrecision(gym.ObservationWrapper):
 
         if isinstance(self.observation_space, Box):
             obs_space = self.observation_space
-            self.observation_space = Box(obs_space.low, obs_space.high,
-                                         obs_space.shape)
+            self.observation_space = Box(obs_space.low, obs_space.high, obs_space.shape)
         elif isinstance(self.observation_space, Dict):
             obs_spaces = copy.copy(self.observation_space.spaces)
             for k, v in obs_spaces.items():
@@ -34,7 +33,8 @@ class SinglePrecision(gym.ObservationWrapper):
             for k, v in observation.items():
                 observation[k] = v.astype(np.float32)
             return observation
-        
+
+
 class FlattenAction(gym.ActionWrapper):
     """Action wrapper that flattens the action."""
 
@@ -48,29 +48,33 @@ class FlattenAction(gym.ActionWrapper):
     def reverse_action(self, action):
         return gym.spaces.utils.flatten(self.env.action_space, action)
 
-def make_env(env_name: str,
-             seed: int,
-             save_folder: Optional[str] = None,
-             add_episode_monitor: bool = True,
-             action_repeat: int = 1,
-             frame_stack: int = 1,
-             from_pixels: bool = False,
-             pixels_only: bool = True,
-             image_size: int = 84,
-             sticky: bool = False,
-             gray_scale: bool = False,
-             flatten: bool = True,
-             terminate_when_unhealthy: bool = True,
-             action_concat: int = 1,
-             obs_concat: int = 1,
-             continuous: bool = True,
-             ) -> gym.Env:
+
+def make_env(
+    env_name: str,
+    seed: int,
+    save_folder: Optional[str] = None,
+    add_episode_monitor: bool = True,
+    action_repeat: int = 1,
+    frame_stack: int = 1,
+    from_pixels: bool = False,
+    pixels_only: bool = True,
+    image_size: int = 84,
+    sticky: bool = False,
+    gray_scale: bool = False,
+    flatten: bool = True,
+    terminate_when_unhealthy: bool = True,
+    action_concat: int = 1,
+    obs_concat: int = 1,
+    continuous: bool = True,
+) -> gym.Env:
 
     # Check if the env is in gym.
     env_ids = list(gym.envs.registry.keys())
 
-    domain_name, task_name = env_name.split('-')
-    env = DMCEnv(domain_name=domain_name, task_name=task_name, task_kwargs={'random': seed})
+    domain_name, task_name = env_name.split("-")
+    env = DMCEnv(
+        domain_name=domain_name, task_name=task_name, task_kwargs={"random": seed}
+    )
 
     if flatten and isinstance(env.observation_space, gym.spaces.Dict):
         env = gym.wrappers.FlattenObservation(env)
@@ -87,11 +91,12 @@ def make_env(env_name: str,
     torch.manual_seed(seed)
     return env
 
+
 class Experiment(object):
     def __init__(self):
         self.n_total_steps = 0
         args = argparse.Namespace()
         self.max_steps = 100000
-        self.env = make_env("cartpole-swingup",1) 
+        self.env = make_env("cartpole-swingup", 1)
         self.eval_env = make_env("cartpole-swingup", 101)
-        self.agent = get_model( self.env, args=args)
+        self.agent = get_model(self.env, args=args)

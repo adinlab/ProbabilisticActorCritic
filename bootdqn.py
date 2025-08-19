@@ -1,9 +1,18 @@
 import torch
-from architectures import ActorCritic, Actor, ProbabilisticLoss, ParallelCritics, ParallelCritic, ActorNetEnsemble, ParallelCriticNet
+from architectures import (
+    ActorCritic,
+    Actor,
+    ProbabilisticLoss,
+    ParallelCritics,
+    ParallelCritic,
+    ActorNetEnsemble,
+    ParallelCriticNet,
+)
 
 
 def tonumpy(x):
     return x.data.cpu().numpy()
+
 
 #####################################################################
 class BootstrapEnsembleLoss(ProbabilisticLoss):

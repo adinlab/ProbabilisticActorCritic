@@ -15,19 +15,20 @@ class PACBayesLoss(BootstrapEnsembleLoss):
         sig2_0 = self.args.prior_variance
         self.args.gamma = 0.99
 
-        bootstrap_mask = (torch.rand_like(q) >= self.bootstrap_rate)*1.0
-        sig2 = (q*bootstrap_mask).var(dim=0).clamp(1e-6, None)
+        bootstrap_mask = (torch.rand_like(q) >= self.bootstrap_rate) * 1.0
+        sig2 = (q * bootstrap_mask).var(dim=0).clamp(1e-6, None)
         logsig2 = sig2.log()
 
-        err_0 = (q - mu_0)*bootstrap_mask
-        term1 = -0.5*logsig2 
-        term2 = 0.5*(err_0**2).mean(dim=0)/sig2_0
+        err_0 = (q - mu_0) * bootstrap_mask
+        term1 = -0.5 * logsig2
+        term2 = 0.5 * (err_0**2).mean(dim=0) / sig2_0
         kl_term = (term1 + term2).mean()
         var_offset = (-self.args.gamma**2 * logsig2).mean()
-        emp_loss= (((q - y)*bootstrap_mask)**2).mean()
+        emp_loss = (((q - y) * bootstrap_mask) ** 2).mean()
         q_loss = emp_loss + kl_term + var_offset
 
         return q_loss
+
 
 ##################################################################################################
 class PBACParallelCritic(BootDQNCritic):
@@ -35,20 +36,24 @@ class PBACParallelCritic(BootDQNCritic):
         super(PBACParallelCritic, self).__init__(arch, args, n_state, n_action)
         self.loss = PACBayesLoss(args)
 
+
 ##################################################################################################
 class PBACParallelCritics(BootDQNCritics):
     def __init__(self, arch, args, n_state, n_action, critictype=PBACParallelCritic):
-        super(PBACParallelCritics, self).__init__(arch, args, n_state, n_action, critictype)
+        super(PBACParallelCritics, self).__init__(
+            arch, args, n_state, n_action, critictype
+        )
 
     @torch.no_grad()
     def get_bellman_target(self, r, sp, done, actor):
         ap = actor.get_action(sp)
-        
-        ap = ap[:,actor.idx_active_critic,:].squeeze()
+
+        ap = ap[:, actor.idx_active_critic, :].squeeze()
         qp_t = self.Q_t(sp, ap)
 
         q_t = r.unsqueeze(-1) + (self.args.gamma * qp_t * (1 - done.unsqueeze(-1)))
         return q_t
+
 
 #####################################################################
 class ThompsonActor(Actor):
@@ -90,7 +95,8 @@ class ThompsonActor(Actor):
         q = critics.forward_model(critics.params_model, critics.buffers_model, SA)
 
         return (-q).mean(), None
-    
+
+
 ######################################################################
 class PBAC(BootDQN):
     _agent_name = "ParallelPBAC"

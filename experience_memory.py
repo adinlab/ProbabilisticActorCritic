@@ -110,13 +110,22 @@ class ExperienceMemoryTorch:
     def get_last_observations(self, batch_size):
         return self.sample_by_index(range(-batch_size, 0))
 
-################################################################    
+
+################################################################
 class ExperienceMemory:
     """Fixed-size buffer to store experience tuples."""
-    def __init__(self,args):
+
+    def __init__(self, args):
         self.device = "cpu"
         self.buffer_size = 1000000
-        self.field_names = ["state", "action", "reward", "next_state", "terminated", "step"]
+        self.field_names = [
+            "state",
+            "action",
+            "reward",
+            "next_state",
+            "terminated",
+            "step",
+        ]
         self.dims = args.dims
         self.reset()
 
@@ -128,18 +137,28 @@ class ExperienceMemory:
         self.memory = {field: np.empty(self.dims[field]) for field in self.field_names}
 
     def add(self, state, action, reward, next_state, terminated, step):
-        for field, value in zip(self.field_names, [state, action, reward, next_state, terminated, step]):
+        for field, value in zip(
+            self.field_names, [state, action, reward, next_state, terminated, step]
+        ):
             self.memory[field][self.pointer] = value
         self.pointer = (self.pointer + 1) % self.buffer_size
         self.data_size = min(self.data_size + 1, self.buffer_size)
 
     def sample_by_index(self, index):
-        return tuple(torch.from_numpy(self.memory[field][index]).to(self.device).float() for field in self.field_names)
+        return tuple(
+            torch.from_numpy(self.memory[field][index]).to(self.device).float()
+            for field in self.field_names
+        )
 
     def sample_by_index_fields(self, index, fields):
         if len(fields) == 1:
-            return torch.from_numpy(self.memory[fields[0]][index]).to(self.device).float() # return a tensor
-        return tuple(torch.from_numpy(self.memory[field][index]).to(self.device).float() for field in fields)
+            return (
+                torch.from_numpy(self.memory[fields[0]][index]).to(self.device).float()
+            )  # return a tensor
+        return tuple(
+            torch.from_numpy(self.memory[field][index]).to(self.device).float()
+            for field in fields
+        )
 
     def sample_random(self, batch_size):
         index = np.random.choice(self.data_size, batch_size)
@@ -151,12 +170,19 @@ class ExperienceMemory:
         if terminal_indices.size == 0:
             return all_indices
 
-        terminal_with_horizon_indices = np.array([np.arange(terminal - horizon+2, terminal + 1)for terminal in terminal_indices]).flatten()
+        terminal_with_horizon_indices = np.array(
+            [
+                np.arange(terminal - horizon + 2, terminal + 1)
+                for terminal in terminal_indices
+            ]
+        ).flatten()
         nonterminal_indices = np.setdiff1d(all_indices, terminal_with_horizon_indices)
         return nonterminal_indices
 
     def sample_random_sequence_snippet(self, batch_size, sequence_length):
-        non_terminal_indices = self.filter_by_nonterminal_steps_with_horizon(sequence_length)
+        non_terminal_indices = self.filter_by_nonterminal_steps_with_horizon(
+            sequence_length
+        )
         indices = np.random.choice(non_terminal_indices, size=batch_size)
         output = []
         for i in range(sequence_length):

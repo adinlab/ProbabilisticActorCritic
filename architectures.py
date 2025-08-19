@@ -1,7 +1,7 @@
 import copy
 import itertools
 import numpy as np
-import torch 
+import torch
 import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,15 +9,17 @@ from torch import nn, func as thf
 from torch.nn import _reduction as _Reduction, functional as F
 
 from experience_memory import ExperienceMemoryTorch
-Module = nn.Module
 
+Module = nn.Module
 
 
 def totorch(x, dtype=th.float32, device="cuda"):
     return th.as_tensor(x, dtype=dtype, device=device)
 
+
 def tonumpy(x):
     return x.data.cpu().numpy()
+
 
 def create_net(d_in, d_out, depth, width, act="crelu", has_norm=True, n_elements=1):
     assert depth > 0, "Need at least one layer"
@@ -47,7 +49,9 @@ def create_net(d_in, d_out, depth, width, act="crelu", has_norm=True, n_elements
     else:
         in_layer = nn.Linear(d_in, width)
         if n_elements > 1:
-            out_layer = nn.Linear(2 * width if double_width else width, d_out, n_elements)
+            out_layer = nn.Linear(
+                2 * width if double_width else width, d_out, n_elements
+            )
         else:
             out_layer = nn.Linear(2 * width if double_width else width, d_out)
 
@@ -71,6 +75,7 @@ def create_net(d_in, d_out, depth, width, act="crelu", has_norm=True, n_elements
 
     return arch
 
+
 ############################################################################
 class CReLU(nn.Module):
 
@@ -80,7 +85,7 @@ class CReLU(nn.Module):
     def forward(self, x):
         x = torch.cat((x, -x), -1)
         return F.relu(x)
-    
+
 
 ############################################################################
 class ActorNet(nn.Module):
@@ -104,6 +109,7 @@ class ActorNet(nn.Module):
         out = self.arch(x).clamp(-0.9999, 0.9999)
         return out, None
 
+
 ############################################################################
 class ActorNetEnsemble(ActorNet):
     def __init__(
@@ -115,16 +121,17 @@ class ActorNetEnsemble(ActorNet):
         act="crelu",
         has_norm=True,
         upper_clamp=None,
-        n_elements=2
+        n_elements=2,
     ):
-        super(ActorNetEnsemble, self).__init__(dim_obs, dim_act, depth, width, act, has_norm, upper_clamp)
+        super(ActorNetEnsemble, self).__init__(
+            dim_obs, dim_act, depth, width, act, has_norm, upper_clamp
+        )
 
         self.dim_act = dim_act
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
         self.arch = create_net(
-            dim_obs[0], dim_act[0]*n_elements, depth, width, act, has_norm
+            dim_obs[0], dim_act[0] * n_elements, depth, width, act, has_norm
         ).append(nn.Tanh())
 
         self.n_elements = n_elements
@@ -134,7 +141,8 @@ class ActorNetEnsemble(ActorNet):
         out = self.arch(x).clamp(-0.9999, 0.9999)
         out = out.view(-1, self.n_elements, self.dim_act[0])
         return out, None
- 
+
+
 ############################################################################
 class ParallelCriticNet(nn.Module):
     def __init__(
@@ -215,6 +223,7 @@ class ParallelCritic(nn.Module):
         self.optim.step()
         self.iter += 1
 
+
 ############################################################################
 class ParallelCritics(nn.Module):
     def __init__(self, arch, args, n_state, n_action, critictype=ParallelCritic):
@@ -237,7 +246,7 @@ class ParallelCritics(nn.Module):
         self.expand = lambda x: (
             x.expand(self.n_members, *x.shape) if len(x.shape) < 3 else x
         )
-       
+
         self.args.learning_rate = 3e-4
         self.args.gamma = 0.99
         self.args.tau = 0.005
@@ -358,7 +367,7 @@ class ParallelCritics(nn.Module):
         qp_t = self.reduce(qp) - alpha * (ep if ep is not None else 0)
         y = r.unsqueeze(-1) + (self.args.gamma * qp_t * (1 - done.unsqueeze(-1)))
         return y
-    
+
 
 ############################################################################
 class Critic(nn.Module):
@@ -422,7 +431,6 @@ class CriticEnsemble(nn.Module):
         self.args.tau = 0.005
         self.args.device = "cuda" if th.cuda.is_available() else "cpu"
 
-
     def __getitem__(self, item):
         return self.critics[item]
 
@@ -456,7 +464,7 @@ class CriticEnsemble(nn.Module):
         qp_t = self.reduce(qp) - alpha * ep
         y = r.unsqueeze(-1) + (self.args.gamma * qp_t * (1 - done.unsqueeze(-1)))
         return y
-    
+
 
 ############################################################################
 class Actor(nn.Module):
@@ -503,9 +511,7 @@ class Actor(nn.Module):
         self.writer = writer
 
     def act(self, s, is_training=True):
-        a, e = self.model(
-            s, is_training=is_training
-        )  
+        a, e = self.model(s, is_training=is_training)
         if is_training:
             if self.args.verbose and self.iter % self.print_freq == 0:
                 self.states.append(tonumpy(s))
@@ -523,7 +529,7 @@ class Actor(nn.Module):
         for target_param, local_param in zip(
             self.target.parameters(), self.model.parameters()
         ):
-            
+
             target_param.data.mul_(1.0 - self.args.tau)
             target_param.data.add_(self.args.tau * local_param.data)
 
@@ -543,6 +549,7 @@ class Actor(nn.Module):
             self.update_target()
 
         self.iter += 1
+
 
 ############################################################################
 class Agent(nn.Module):
@@ -657,16 +664,17 @@ class ActorCritic(Agent):
         return a
 
     def Q_value(self, s, a):
-        
+
         if len(s.shape) == 1:
             s = s[None]
         if len(a.shape) == 1:
             a = a[None]
         if isinstance(self.critics, ParallelCritics):
             self.critics.unstack(target=False, single=True)
-        
+
         q = self.critics[0].Q(s, a)
         return q.item()
+
 
 ############################################################################
 class _Loss(Module):
@@ -678,16 +686,10 @@ class _Loss(Module):
             self.reduction: str = _Reduction.legacy_get_string(size_average, reduce)
         else:
             self.reduction = reduction
+
+
 ############################################################################
 class ProbabilisticLoss(_Loss):
 
     def forward(self, mu, logvar, y):
         pass
-
-    
-
-
-
-   
-
-    
