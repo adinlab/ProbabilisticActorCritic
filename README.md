@@ -3,9 +3,9 @@
 This repository includes the code to replicate the PBAC algorithm from the following publication:
 
 
-> **Deep Exploration With PAC-Bayes**\
-> _Bahareh Tasdighi, Manuel Haussmann, Nicklas Werge, Yi-Shan Wu, Melih Kandemir, 2025_\ 
-> _European Conference on Artificial Intelligence_\
+> **Deep Exploration With PAC-Bayes**  
+> _Bahareh Tasdighi, Manuel Haussmann, Nicklas Werge, Yi-Shan Wu, Melih Kandemir, 2025_  
+> _European Conference on Artificial Intelligence_  
 > [ArXiv](https://arxiv.org/abs/2402.03055) 
 
 
